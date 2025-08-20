@@ -1,13 +1,48 @@
-# Streamio Combined MVP (Backend + App UI)
+# Streamio Backend (Minimal) – Torrentio + TMDB
 
-Minimal edits: set one env var on Render and one URL in a config file.
+This is a lightweight NestJS backend that provides:
+- `/search?q=` → TMDB search (movies/series)  
+- `/streams/:type/:id` → Torrentio aggregator (real torrents)
 
-## Backend (Render)
-1) Deploy `backend/` to Render (Node).
-2) Add env var: `TMDB_API_KEY=YOUR_TMDB_V3_KEY`
-3) Test: `https://YOUR-RENDER-URL/search?query=avengers`
+> ID formats accepted by `/streams`:
+> - `tt1234567` (IMDb)  
+> - `tmdb:movie:12345` or `tmdb:series:54321` (auto-resolves to IMDb)
 
-## App UI (Expo/React Native)
-- Copy `app/src/` into your project's `src/` (merge/replace).
-- Set `src/config.ts`: BACKEND_URL='https://YOUR-RENDER-URL'
-- Ensure your root uses `src/App.tsx` (it renders the Tabs navigator).
+## Quick Start (Local)
+
+1) Install deps:
+```
+npm i
+```
+
+2) Create `.env`:
+```
+TMDB_API_KEY=YOUR_TMDB_API_KEY
+PORT=3000
+```
+
+3) Run:
+```
+npm run build && npm start
+```
+
+Open:
+- http://localhost:3000/ → health
+- http://localhost:3000/search?q=avengers
+- http://localhost:3000/streams/movie/tt4154796
+- http://localhost:3000/streams/movie/tmdb:movie:299534
+
+## Deploy to Render
+
+- Push this repo to GitHub
+- Create a new **Web Service**
+- Environment:
+  - `TMDB_API_KEY` = your key
+  - `PORT` = 10000 (or leave blank; Render injects PORT)
+- Build Command: `npm run build`
+- Start Command: `npm start`
+
+## Notes
+
+- This backend marks Torrentio streams with `"unsafe": true`. You should display a warning in your app.
+- Next step: integrate Real-Debrid to convert magnet links into playable HTTPS streams.
